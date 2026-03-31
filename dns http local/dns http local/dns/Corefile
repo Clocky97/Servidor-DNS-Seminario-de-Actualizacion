@@ -1,0 +1,14 @@
+.:53 {
+    log
+    errors
+
+    # Responde los tres nombres locales desde un archivo estilo hosts.
+    hosts hosts-ipf.txt {
+        ttl 60
+        fallthrough
+    }
+
+    # Reenvía todo lo demás al DNS público que prefieras.
+    forward . 8.8.8.8 1.1.1.1
+    cache 30
+}

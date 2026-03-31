@@ -1,0 +1,184 @@
+
+
+Directorio de trabajo local C:/portable
+estrcutra de directorios 
+
+
+ Directorio de C:\portable\Apache24    //utilizaremos apache 
+ Directorio de C:\portable\dns         //aqui estaran los archivos del dns elegido para probar (CoreDns o unbound)
+ Directorio de C:\portable\nginx       //si todo funciona bien con apache .. hacer lo mismo pero ahora con nginx 
+ 
+
+Descargar Servidores Web  para levantar a mano 
+https://www.apachelounge.com/download/VS18/binaries/httpd-2.4.66-260223-Win64-VS18.zip
+
+https://nginx.org/download/nginx-1.28.2.zip
+
+Descargar CoreDns.exe
+https://sourceforge.net/projects/coredns.mirror/files/v1.14.2/coredns_1.14.2_windows_amd64.tgz/download
+
+
+
+
+---- Levantar Apache a mano  con cmd como administrador, trabajaremos en un directorio llamado C:/portable
+
+editar el archivo httpd.conf y poner bien la ruta donde esta nuestro directorio , en nuesto caso de prueba Define SRVROOT "C:/portable/Apache24"
+
+		cd C:\portable\apache\bin
+		httpd.exe
+
+		--O en foreground:
+
+		httpd.exe -DFOREGROUND
+
+
+---- Levantar Nginx a mano  con cmd como administrador
+		
+		cd C:\portable\nginx
+		nginx.exe
+
+
+
+ ************************************************* dns *********************************************
+
+-- Levantar el Servicio dns , utilizamos el servidor dns llamado CoreDns, que esta en C:\portable2\dns
+
+   -- configuracion del archivo Corefile
+   
+				 .:53 {
+					log
+					errors
+
+					# Responde los tres nombres locales desde un archivo estilo hosts.
+					hosts hosts-ipf.txt {
+						ttl 60
+						fallthrough
+					}
+
+					# Reenvía todo lo demás al DNS público que prefieras.
+					forward . 8.8.8.8 1.1.1.1
+					cache 30
+				}
+
+	-- configuracion del archivo hosts-ipf.txt , primeo la ip del servidor web y luego el dominio que queremos que responda 
+	
+			192.168.10.22 www.ipfformosa.com
+			192.168.10.22 www.fiestaipf2026.com
+			192.168.10.22 www.climaformosa.com
+
+
+
+-- levantar el servicio dns a mano con cmd como administrador, trabajaremos en un directorio llamado C:/portable/dns
+	
+	cd C:\portable\dns\coredns
+	coredns.exe
+	
+	
+
+ ############ Otro dns si quieren probar *********************
+			
+			https://www.nlnetlabs.nl/downloads/unbound/unbound-1.24.2.zip 
+		
+		
+		
+		---crear un archivo conf-local.conf y cargar esto 
+		
+server:
+    interface: 192.168.10.55  //cambie la ip por la ip del servidor mismo  dns 
+    port: 53
+    do-ip4: yes
+    do-udp: yes
+    do-tcp: yes
+    verbosity: 1
+    access-control: 0.0.0.0/0 allow
+
+    local-data: "www.ipfformosa.com. 60 IN A 192.168.10.22"
+    local-data: "www.fiestaipf2026.com. 60 IN A 192.168.10.22"
+    local-data: "www.climaformosa.com. 60 IN A 192.168.10.22"
+
+forward-zone:
+    name: "."
+    forward-addr: 8.8.8.8
+    forward-addr: 1.1.1.1
+	
+	
+	
+	--- se ejecuta el servicio a mano asi 
+	unbound.exe -c conf-local.conf
+	
+	
+	
+	*************************************************************************************************
+		
+		
+
+	
+	
+	
+CONFIGURACION APACHE 
+		----  cargar en  C:\portable\Apache24\conf\extra\httpd-vhosts.conf, esto 
+
+
+		<VirtualHost *:80>
+			ServerName www.ipfformosa.com
+			DocumentRoot "C:/portable/Apache24/htdocs/sitio-ipfformosa"
+		</VirtualHost>
+
+		<VirtualHost *:80>
+			ServerName www.fiestaipf2026.com
+			DocumentRoot "C:/portable/Apache24/htdocs/sitio-fiestaipf2026"
+		</VirtualHost>
+
+		<VirtualHost *:80>
+			ServerName www.climaformosa.com
+			DocumentRoot "C:/portable/Apache24/htdocs/sitio-climaformosa"
+		</VirtualHost>
+
+
+	--- en el archivo httpd.conf incluir la lectura del archivo  httpd-vhosts.conf
+	    
+        Include C:/portable/Apache24/conf/extra/httpd-vhosts.conf
+		
+		
+		
+		
+CONFIGURACION NGINX		
+
+  --reemplazar el contenido del archivo nginx.conf por las siguientes lineas 
+
+# Archivo pensado para nginx/Windows descomprimido
+# Ajusta root según dónde coloques el proyecto.
+
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile      on;
+    keepalive_timeout  65;
+
+    server {
+        listen       80;
+        server_name  www.ipfformosa.com;
+        root         C:/portable/nginx/html/sitio-ipfformosa;
+        index        index.html;
+    }
+
+    server {
+        listen       80;
+        server_name  www.fiestaipf2026.com;
+        root         C:/portable/nginx/html/sitio-fiestaipf2026;
+        index        index.html;
+    }
+
+    server {
+        listen       80;
+        server_name  www.climaformosa.com;
+        root         C:/portable/nginx/html/sitio-climaformosa;
+        index        index.html;
+    }
+}

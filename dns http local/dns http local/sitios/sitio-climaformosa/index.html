@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clima Formosa</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="overlay">
+      <img src="assets/ipf-logo.png" alt="Logo IPF" class="logo">
+      <div>
+        <span class="tag">Sitio demo con API pública</span>
+        <h1>Clima en Formosa Capital</h1>
+        <p>Consulta simple del tiempo actual y pronóstico corto usando una API meteorológica gratuita.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="card current">
+      <h2>Estado actual</h2>
+      <div id="status" class="status">Consultando datos meteorológicos...</div>
+      <div class="weather-grid">
+        <div><span>Ciudad</span><strong id="city">Formosa, Argentina</strong></div>
+        <div><span>Temperatura</span><strong id="temp">-- °C</strong></div>
+        <div><span>Viento</span><strong id="wind">-- km/h</strong></div>
+        <div><span>Hora del dato</span><strong id="time">--</strong></div>
+      </div>
+    </section>
+
+    <section class="card forecast-card">
+      <h2>Pronóstico de hoy</h2>
+      <div id="forecast" class="forecast"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#e6f4ff;color:#16324f}
+.hero{background:url('assets/clima-hero.svg') center/cover no-repeat;min-height:320px}
+.overlay{min-height:320px;background:linear-gradient(90deg,rgba(12,41,72,.72),rgba(12,41,72,.18));display:flex;gap:22px;align-items:center;padding:50px 8vw}
+.logo{width:120px;max-width:26vw}
+.tag{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:8px 14px;border-radius:999px;font-weight:700;margin-bottom:12px}
+h1{margin:0 0 12px;color:#fff;font-size:clamp(2rem,5vw,3.4rem)}
+.overlay p{color:#eff6ff;max-width:680px}
+.main{display:grid;grid-template-columns:1.2fr .9fr;gap:24px;padding:40px 8vw 70px}
+.card{background:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 40px rgba(18,52,86,.12)}
+.status{padding:12px 16px;border-radius:14px;background:#eff6ff;color:#1d4ed8;margin-bottom:18px;font-weight:700}
+.weather-grid{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:18px}
+.weather-grid div,.forecast-item{background:#f7fbff;border:1px solid #d8ecff;border-radius:16px;padding:18px}
+.weather-grid span,.forecast-item span{display:block;font-size:.92rem;color:#52708f;margin-bottom:8px}
+.weather-grid strong,.forecast-item strong{font-size:1.2rem}
+.forecast{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));gap:16px}
+@media(max-width:850px){.main,.weather-grid,.forecast{grid-template-columns:1fr}.overlay{flex-direction:column;align-items:flex-start}}
